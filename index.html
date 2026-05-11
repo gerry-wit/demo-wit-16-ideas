@@ -12,7 +12,7 @@
   </head>
   <body>
     <!-- A-Frame Scene -->
-    <a-scene webxr="optionalFeatures: hit-test, local-floor;">
+    <a-scene background="color: #ffffff" webxr="optionalFeatures: hit-test, local-floor;">
       
       <!-- Assets -->
       <a-assets>
@@ -33,7 +33,7 @@
       <!-- Container for Image Target or Free Placement -->
       <a-entity id="target-container" reddie-controller>
         <!-- 3D Model will appear here when spawned -->
-        <a-entity gltf-model="#reddieModel" scale="0.1 0.1 0.1" position="0 0 0" animation-mixer></a-entity>
+        <a-entity gltf-model="#reddieModel" scale="1.5 1.5 1.5" position="0 0 0" animation-mixer></a-entity>
       </a-entity>
 
     </a-scene>

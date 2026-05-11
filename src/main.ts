@@ -23,14 +23,14 @@ AFRAME.registerComponent('reddie-controller', {
       if (!reddieModel) return;
       
       if (state === 'idle') {
-        reddieModel.setAttribute('animation-mixer', 'timeScale: 0.5'); // Slow down for idle
-        reddieModel.setAttribute('scale', '0.1 0.1 0.1'); // Normal size
+        reddieModel.setAttribute('animation-mixer', 'timeScale: 0.5'); 
+        reddieModel.setAttribute('scale', '1.5 1.5 1.5'); 
       } else if (state === 'talking') {
-        reddieModel.setAttribute('animation-mixer', 'timeScale: 1.5'); // Speed up for talking/energetic
-        reddieModel.setAttribute('scale', '0.105 0.105 0.105'); // Slightly larger to emphasize
+        reddieModel.setAttribute('animation-mixer', 'timeScale: 1.5'); 
+        reddieModel.setAttribute('scale', '1.6 1.6 1.6'); 
       } else if (state === 'thinking') {
-        reddieModel.setAttribute('animation-mixer', 'timeScale: 0.1'); // Almost frozen
-        reddieModel.setAttribute('scale', '0.095 0.095 0.095'); // Slightly smaller, contracted
+        reddieModel.setAttribute('animation-mixer', 'timeScale: 0.1'); 
+        reddieModel.setAttribute('scale', '1.4 1.4 1.4'); 
       }
     };
 
