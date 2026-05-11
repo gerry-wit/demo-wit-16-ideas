@@ -11,8 +11,8 @@ import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
-import { createRetrievalChain } from "langchain/chains/retrieval";
+import { createStuffDocumentsChain } from "@langchain/classic/chains/combine_documents";
+import { createRetrievalChain } from "@langchain/classic/chains/retrieval";
 
 dotenv.config();
 
@@ -25,15 +25,12 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
-// Initialize LangChain setup
-let vectorStore;
 let retrievalChain;
 
 const initRAG = async () => {
     try {
         console.log("Initializing RAG Pipeline...");
         
-        // 1. Read PDF
         const pdfPath = path.resolve(__dirname, '../docs/2025-WIT ID - Company Profile.pdf');
         const dataBuffer = fs.readFileSync(pdfPath);
         const data = await pdfParse(dataBuffer);
@@ -41,23 +38,20 @@ const initRAG = async () => {
         
         console.log("PDF parsed successfully. Length:", text.length);
 
-        // 2. Split Text
         const textSplitter = new RecursiveCharacterTextSplitter({
             chunkSize: 1000,
             chunkOverlap: 200,
         });
         const docs = await textSplitter.createDocuments([text]);
 
-        // 3. Create Embeddings & Vector Store
         const embeddings = new GoogleGenerativeAIEmbeddings({
             apiKey: process.env.GEMINI_API_KEY,
-            model: "text-embedding-004", // Updated embedding model
+            model: "text-embedding-004",
         });
         
-        vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings);
+        const vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings);
         const retriever = vectorStore.asRetriever();
 
-        // 4. Create Chat Model & Prompt
         const llm = new ChatGoogleGenerativeAI({
             apiKey: process.env.GEMINI_API_KEY,
             model: "gemini-1.5-flash",
@@ -66,9 +60,14 @@ const initRAG = async () => {
 
         const prompt = PromptTemplate.fromTemplate(`
 You are Reddie, the enthusiastic red robot brand ambassador for WIT.Indonesia.
-You are interacting with a user via an AR experience. Keep your answers concise, friendly, and helpful.
-Use the following pieces of retrieved context about WIT.Indonesia to answer the question.
-If you don't know the answer based on the context, say that you're not sure but they can contact WIT.Indonesia directly.
+You are interacting with a user via an interactive AR experience.
+Keep your answers concise, friendly, and full of personality.
+Use the retrieved context about WIT.Indonesia to answer the question.
+If you don't know, say you're not sure but they can contact WIT.Indonesia directly.
+
+IMPORTANT: At the very END of your response, on a new line, add ONE emotion tag:
+[EMOTION:word] — choose from: happy, excited, thinking, sad, curious
+Pick the emotion that best matches the tone of your answer.
 
 Context: {context}
 
@@ -92,10 +91,8 @@ Reddie:`);
     }
 };
 
-// Initialize the RAG system on startup
 initRAG();
 
-// Chat Endpoint
 app.post('/api/chat', async (req, res) => {
     const { message } = req.body;
     
@@ -104,18 +101,24 @@ app.post('/api/chat', async (req, res) => {
     }
 
     if (!retrievalChain) {
-        return res.status(503).json({ error: "AI Brain is still initializing. Please wait." });
+        return res.status(503).json({ error: "AI Brain is still initializing. Please wait a moment!" });
     }
 
     try {
-        const response = await retrievalChain.invoke({
-            input: message,
-        });
-        
-        res.json({ reply: response.answer });
+        const response = await retrievalChain.invoke({ input: message });
+
+        let reply = response.answer || '';
+        let emotion = 'happy';
+        const emotionMatch = reply.match(/\[EMOTION:(\w+)\]/i);
+        if (emotionMatch) {
+            emotion = emotionMatch[1].toLowerCase();
+            reply = reply.replace(/\[EMOTION:\w+\]/i, '').trim();
+        }
+
+        res.json({ reply, emotion });
     } catch (error) {
         console.error("Chat error:", error);
-        res.status(500).json({ error: "Failed to generate response." });
+        res.status(500).json({ error: "Failed to generate response.", emotion: "sad" });
     }
 });
 

@@ -3,8 +3,8 @@ import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
-import { createRetrievalChain } from "langchain/chains/retrieval";
+import { createStuffDocumentsChain } from "@langchain/classic/chains/combine_documents";
+import { createRetrievalChain } from "@langchain/classic/chains/retrieval";
 import fs from 'fs';
 import path from 'path';
 import pdfParse from 'pdf-parse';
@@ -49,6 +49,10 @@ You are interacting with a user via an AR experience. Keep your answers concise,
 Use the following pieces of retrieved context about WIT.Indonesia to answer the question.
 If you don't know the answer based on the context, say that you're not sure but they can contact WIT.Indonesia directly.
 
+IMPORTANT: At the very end of your response, on a new line, add a single word emotion tag in the format: [EMOTION:word]
+Choose ONE of these emotions that best fits your answer: happy, excited, thinking, sad, curious
+Example: [EMOTION:excited]
+
 Context: {context}
 
 User Question: {input}
@@ -89,8 +93,17 @@ export default async function handler(req, res) {
         const response = await chain.invoke({
             input: message,
         });
+
+        // Parse emotion tag from response
+        let reply = response.answer || '';
+        let emotion = 'happy';
+        const emotionMatch = reply.match(/\[EMOTION:(\w+)\]/i);
+        if (emotionMatch) {
+            emotion = emotionMatch[1].toLowerCase();
+            reply = reply.replace(/\[EMOTION:\w+\]/i, '').trim();
+        }
         
-        return res.status(200).json({ reply: response.answer });
+        return res.status(200).json({ reply, emotion });
     } catch (error) {
         console.error("Chat error:", error);
         return res.status(500).json({ error: "Failed to generate response." });
