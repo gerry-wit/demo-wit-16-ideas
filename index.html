@@ -38,15 +38,32 @@
 
     </a-scene>
 
-    <!-- UI Overlay for Chat -->
-    <div id="demo-controls" style="position: absolute; top: 20px; left: 20px; z-index: 1000;">
-      <button id="skip-tracking-btn" style="padding: 10px 15px; background: #ff3366; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: sans-serif; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">Skip Tracking (Demo Mode)</button>
+    <!-- Landing Screen -->
+    <div id="landing-screen">
+      <div class="landing-content">
+        <img src="/assets/wit-logo.png" alt="WIT Logo" class="landing-logo" />
+        <h1>Welcome to Spatial AI</h1>
+        <p>Interact with Reddie, the WIT.Indonesia Brand Ambassador.</p>
+        
+        <div class="mode-buttons">
+          <button id="btn-demo-mode" class="mode-btn primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            Interactive Agent (Demo)
+          </button>
+          
+          <button id="btn-scan-mode" class="mode-btn secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"></path></svg>
+            Scan Logo (AR)
+          </button>
+        </div>
+      </div>
     </div>
 
+    <!-- UI Overlay for Chat -->
     <div id="chat-ui" class="hidden">
       <div id="chat-messages">
         <div class="message reddie-msg">
-          <div class="msg-bubble">Hi! I'm Reddie, WIT.Indonesia's brand ambassador. Scan the logo to see me, and ask me anything!</div>
+          <div class="msg-bubble">Hi! I'm Reddie. How can I help you today?</div>
         </div>
       </div>
       <div id="chat-input-container">
