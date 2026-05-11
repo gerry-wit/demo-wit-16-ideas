@@ -34,7 +34,7 @@ const initRAG = async () => {
 
         const embeddings = new GoogleGenerativeAIEmbeddings({
             apiKey: process.env.GEMINI_API_KEY,
-            model: "text-embedding-004", 
+            model: "embedding-001",
         });
         
         const vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings);
