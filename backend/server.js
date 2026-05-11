@@ -7,7 +7,8 @@ import { createRequire } from 'module';
 import fs from 'fs';
 
 const require = createRequire(import.meta.url);
-const pdfParse = require('pdf-parse');
+const _pdfParse = require('pdf-parse');
+const pdfParse = _pdfParse.default || _pdfParse;
 
 import { ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
