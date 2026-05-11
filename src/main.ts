@@ -1,6 +1,6 @@
 import './style.css'
 
-// Ensure AFRAME is available globally (it's injected via 8th Wall script in index.html)
+// Ensure AFRAME is available globally
 declare const AFRAME: any;
 
 AFRAME.registerComponent('reddie-controller', {
@@ -11,50 +11,29 @@ AFRAME.registerComponent('reddie-controller', {
     const chatSend = document.getElementById('chat-send');
     const chatMessages = document.getElementById('chat-messages');
     
+    // Hide model initially
+    const reddieModel = el.querySelector('[gltf-model]');
+    if (reddieModel) {
+      reddieModel.setAttribute('visible', 'false');
+    }
+
     // Demo Mode Toggle
     const skipBtn = document.getElementById('skip-tracking-btn');
     skipBtn?.addEventListener('click', () => {
       const scene = document.querySelector('a-scene');
-      const reddieModel = el.querySelector('[gltf-model]');
       
       if (scene && reddieModel) {
-        // Remove from image target
-        el.removeChild(reddieModel);
+        // Show the model
+        reddieModel.setAttribute('visible', 'true');
         
-        // Add to global scene in front of the camera
-        const freeReddie = document.createElement('a-entity');
-        freeReddie.setAttribute('gltf-model', '#reddieModel');
-        freeReddie.setAttribute('scale', '0.5 0.5 0.5');
-        freeReddie.setAttribute('position', '0 0 -4');
-        freeReddie.setAttribute('animation-mixer', '');
-        
-        scene.appendChild(freeReddie);
+        // Reposition in front of camera
+        el.setAttribute('position', '0 0 -4');
         
         // Show Chat UI and hide button
         chatUi?.classList.remove('hidden');
         skipBtn.style.display = 'none';
         
-        console.log("Demo Mode Activated. Reddie spawned without tracking.");
-      }
-    });
-
-    // Show UI when image is found
-    el.sceneEl.addEventListener('xrimagefound', (e: any) => {
-      if (e.detail.name === 'wit-logo') {
-        console.log("WIT Logo Found! Spawning Reddie.");
-        chatUi?.classList.remove('hidden');
-        if (skipBtn) skipBtn.style.display = 'none';
-        // TODO: Start idle or talking animations here if needed
-      }
-    });
-
-    // Hide UI when image is lost
-    el.sceneEl.addEventListener('xrimagelost', (e: any) => {
-      if (e.detail.name === 'wit-logo') {
-        console.log("WIT Logo Lost.");
-        chatUi?.classList.add('hidden');
-        if (skipBtn) skipBtn.style.display = 'block';
-        // TODO: Pause animations
+        console.log("Demo Mode Activated. Reddie spawned!");
       }
     });
 

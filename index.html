@@ -5,25 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <title>WIT.Indonesia - Reddie AR</title>
     
-    <!-- 8thWall Web (Now Open Source) -->
-    <script src="//cdn.8thwall.com/web/aframe/8frame-1.3.0.min.js"></script>
-    <script src="//cdn.8thwall.com/web/xrextras/xrextras.js"></script>
-    <script async src="//apps.8thwall.com/xrweb?appKey=open-source"></script>
+    <!-- Standard A-Frame WebXR -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
     <!-- A-Frame Scene -->
-    <xrextras-capture-button></xrextras-capture-button>
-    <xrextras-capture-preview></xrextras-capture-preview>
-    
-    <a-scene
-      xrextras-gesture-detector
-      xrextras-almost-there
-      xrextras-loading
-      xrextras-runtime-error
-      renderer="colorManagement: true"
-      xrweb>
+    <a-scene webxr="optionalFeatures: hit-test, local-floor;">
       
       <!-- Assets -->
       <a-assets>
@@ -41,9 +30,9 @@
       <a-light type="directional" intensity="0.5" position="1 1 1"></a-light>
       <a-light type="ambient" intensity="1"></a-light>
 
-      <!-- Image Target: Assuming you configure a target named "wit-logo" in the 8th Wall console -->
-      <a-entity xrextras-named-image-target="name: wit-logo" reddie-controller>
-        <!-- 3D Model will appear here when logo is scanned -->
+      <!-- Container for Image Target or Free Placement -->
+      <a-entity id="target-container" reddie-controller>
+        <!-- 3D Model will appear here when spawned -->
         <a-entity gltf-model="#reddieModel" scale="0.1 0.1 0.1" position="0 0 0" animation-mixer></a-entity>
       </a-entity>
 
