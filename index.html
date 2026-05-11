@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>WIT.Indonesia - Reddie AR</title>
+    
+    <!-- 8thWall Web (Now Open Source) -->
+    <script src="//cdn.8thwall.com/web/aframe/8frame-1.3.0.min.js"></script>
+    <script src="//cdn.8thwall.com/web/xrextras/xrextras.js"></script>
+    <script async src="//apps.8thwall.com/xrweb"></script>
+    
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <!-- A-Frame Scene -->
+    <xrextras-capture-button></xrextras-capture-button>
+    <xrextras-capture-preview></xrextras-capture-preview>
+    
+    <a-scene
+      xrextras-gesture-detector
+      xrextras-almost-there
+      xrextras-loading
+      xrextras-runtime-error
+      renderer="colorManagement: true"
+      xrweb>
+      
+      <!-- Assets -->
+      <a-assets>
+        <!-- Placeholders for the model -->
+        <a-asset-item id="reddieModel" src="/assets/Reddie.glb"></a-asset-item>
+      </a-assets>
+
+      <!-- Camera -->
+      <a-camera
+        position="0 4 10"
+        raycaster="objects: .cantap"
+        cursor="fuse: false; rayOrigin: mouse;">
+      </a-camera>
+
+      <a-light type="directional" intensity="0.5" position="1 1 1"></a-light>
+      <a-light type="ambient" intensity="1"></a-light>
+
+      <!-- Image Target: Assuming you configure a target named "wit-logo" in the 8th Wall console -->
+      <a-entity xrextras-named-image-target="name: wit-logo" reddie-controller>
+        <!-- 3D Model will appear here when logo is scanned -->
+        <a-entity gltf-model="#reddieModel" scale="0.1 0.1 0.1" position="0 0 0" animation-mixer></a-entity>
+      </a-entity>
+
+    </a-scene>
+
+    <!-- UI Overlay for Chat -->
+    <div id="demo-controls" style="position: absolute; top: 20px; left: 20px; z-index: 1000;">
+      <button id="skip-tracking-btn" style="padding: 10px 15px; background: #ff3366; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: sans-serif; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">Skip Tracking (Demo Mode)</button>
+    </div>
+
+    <div id="chat-ui" class="hidden">
+      <div id="chat-messages">
+        <div class="message reddie-msg">
+          <div class="msg-bubble">Hi! I'm Reddie, WIT.Indonesia's brand ambassador. Scan the logo to see me, and ask me anything!</div>
+        </div>
+      </div>
+      <div id="chat-input-container">
+        <input type="text" id="chat-input" placeholder="Ask Reddie a question..." autocomplete="off" />
+        <button id="chat-send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
