@@ -7,7 +7,10 @@ import { createStuffDocumentsChain } from "@langchain/classic/chains/combine_doc
 import { createRetrievalChain } from "@langchain/classic/chains/retrieval";
 import fs from 'fs';
 import path from 'path';
-import pdfParse from 'pdf-parse';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const pdfParse = require('pdf-parse');
 
 let retrievalChain = null;
 
