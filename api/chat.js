@@ -10,8 +10,7 @@ import path from 'path';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
-const _pdfParse = require('pdf-parse');
-const pdfParse = _pdfParse.default || _pdfParse;
+const pdfParse = require('pdf-parse');
 
 let retrievalChain = null;
 
